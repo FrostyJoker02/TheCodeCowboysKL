@@ -42,7 +42,7 @@ namespace PromptQuest.Services {
 			}
 			if(mapNodeId == 0) {
 				//Move forward one location. Only works for now because map is linear.
-				gameState.PlayerLocation++;
+			gameState.PlayerLocation++;
 			}
 			else {
 				// Set player's location to the selected mapNode
