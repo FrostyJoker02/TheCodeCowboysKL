@@ -186,9 +186,6 @@ namespace PromptQuest.Services {
 				case "move":
 					_mapService.MovePlayer(gameState);
 					break;
-				case "move":
-					_mapService.MovePlayer(gameState);
-					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(action), action, null);
 			}
