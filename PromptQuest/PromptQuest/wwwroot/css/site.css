@@ -1,0 +1,365 @@
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+	box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+:root {
+	--pq-border: solid .3vmin white;
+	--background-color-primary: #171822;
+	--background-color-highlight: #282a3b;
+	--pq-font-color: white;
+	--pq-font-large: 3vmin;
+	--pq-font-normal: 2vmin;
+	--pq-font-small: 1vmin;
+}
+
+/*------------------------- Layout -------------------------*/
+
+html, body {
+	display: grid;
+	height: 100vh;
+	width: 100vw;
+	background-color: var(--background-color-primary);
+	margin: 0;
+	font-size: 16pt;
+}
+
+body {
+	padding: 2vmin; /* Adds some padding around the whole screen */
+}
+
+/*---- Custom layout ------------------------------------------------------------------*/
+
+/* Container for positioning pq-game-elements using x y coordinates anchored to edges of the container */
+.pq-container {
+	position: relative; /* Makes this the reference point for the absolute positioning of child elements */
+	height: 100%;
+	width: 100%;
+}
+
+	.pq-container > * {
+		position: absolute; /* Allows this element to be positioned using x y coordinates relative to the edges of it's parent container. */
+		user-select: none; /* Prevents text selection */
+	}
+
+/* Allows for tabs in modal to be shown and hidden */
+.tab-content {
+	display: none;
+}
+
+/* Allows for tabs in modal to be shown and hidden */
+.show-tab {
+	display: block;
+}
+
+/* Style for map container */
+.pq-map-display {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+/* Style for map nodes */
+.map-node {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background-color: var(--background-color-highlight);
+	border: 2px solid white;
+	cursor: pointer;
+}
+
+.map-node-disabled {
+	border: none;
+	cursor: not-allowed;
+}
+
+.map-node-completed {
+	border: 2px solid green;
+}
+
+.map-node-current {
+	border: 2px solid orange;
+}
+
+/* Style for the dotted connecting lines */
+.map-edge {
+	width: 50px;
+	height: 2px;
+	background: repeating-linear-gradient(90deg, #ccc, #ccc 5px, transparent 5px, transparent 10px);
+}
+
+/* We have to have this here instead of in the view because it breaks the bracket coloring in the text editor for some reason. */
+.pq-center-element-x {
+	transform: translateX(-50%); /* Shifts it by half its width to achieve true centering */
+}
+
+/* We have to have this here instead of in the view because it breaks the bracket coloring in the text editor for some reason. */
+.pq-center-element-y {
+	transform: translateY(-50%); /* Shifts it by half its width to achieve true centering */
+}
+
+/* Custom Modal window */
+.pq-modal-fullscreen {
+	position: fixed;
+	top: 0; /* Default position */
+	left: 0;
+	height: 100%;
+	width: 100%; /* Defaults to Fullscreen */
+	background-color: var(--background-color-primary);
+	display: none; /* Hidden by default */
+	z-index: 1050; /* Ensure it's above other elements */
+	padding: 2vmin;
+}
+
+.pq-tab-window {
+	position: absolute;
+	background-color: var(--background-color-primary);
+	padding: 2vmin;
+}
+
+/* A flex display that will automatically stack inventory slots based on screen size */
+.pq-inventory-display {
+	display: flex; /* Use flexbox for layout */
+	flex-wrap: wrap; /* Allow items to wrap to the next line */
+	justify-content: center; /* Center items horizontally */
+	overflow-y: visible; /* Enable vertical scrolling if content overflows */
+	overflow-x: hidden; /* Hide horizontal scrolling (optional) */
+	gap: 10px; /* Space between squares */
+}
+
+/* Inventory slots */
+.pq-inventory-slot {
+	width: 12vmin; /* Fixed width */
+	height: 12vmin; /* Fixed height */
+	border: var(--pq-border);
+	border-radius: 10px;
+	/* Flexbox for centering */
+	display: flex;
+	justify-content: center; /* Centers horizontally */
+	align-items: center; /* Centers vertically */
+}
+
+	/* Inventory slots */
+	.pq-inventory-slot > img {
+		max-width: 100%; /* Prevents the image from overflowing */
+		max-height: 100%; /* Keeps the image within the slot */
+		object-fit: contain; /* Ensures the image maintains aspect ratio */
+		border-radius: 10px;
+	}
+
+/*---- Reusable Player Displays ------------------------------------------------------------------*/
+
+.player-name {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.player-image {
+	border: var(--pq-border);
+}
+
+.player-attack {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.player-defense {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.player-hp {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.stat-text {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+/*----------- Reusable Enemy Displays ---------------------------------------------------------------------------------  */
+
+.enemy-name {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.enemy-image {
+	border: var(--pq-border);
+}
+
+.enemy-attack {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.enemy-defense {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+.enemy-hp {
+	font-size: var(--pq-font-large);
+	color: var(--pq-font-color);
+}
+
+/*---------- Reusable Login Display ------------------------------------------------------------------------------------*/
+
+.login-display img {
+	border-radius: 50%;
+	height: 100%;
+}
+
+.login-display a {
+	display: inline-block;
+	font-size: var(--pq-font-normal);
+	margin-left: .5vmin;
+}
+
+/*--------- Other Displays -------------------------------------------------------------------------------------*/
+
+/* Adds styling to all the buttons in the action button display*/
+.action-button-display button {
+	width: 100%;
+	font-size: var(--pq-font-large);
+	margin-bottom: 2vmin;
+}
+
+/* Displays the the results of the user's action on the screen. */
+.dialog-box {
+	/* Styling */
+	font-size: var(--pq-font-normal);
+	color: var(--pq-font-color);
+	border: var(--pq-border);
+	padding: 1vmin;
+}
+
+/* Applies styling to the button inside of the menu button display.*/
+.menu-button {
+	width: 100%;
+	height: 100%;
+}
+
+.pq-form {
+	padding: 20px;
+}
+
+/*--------------------- Buttons ---------------------------*/
+
+.pq-button {
+	padding: 10px;
+	background-color: var(--background-color-primary);
+	font-size: var(--pq-font-normal);
+	color: var(--pq-font-color);
+	border: var(--pq-border);
+	border-radius: 10px;
+	/*For when the butotn is applied to an anchor tag*/
+	text-decoration: none;
+	cursor: pointer;
+}
+
+	.pq-button:hover {
+		/*Overide hyperlink styling for when this is applied to anchor tag*/
+		color: var(--pq-font-color);
+		background-color: var(--background-color-highlight);
+	}
+
+.pq-tab {
+	position: absolute;
+	background-color: var(--background-color-primary);
+	font-size: var(--pq-font-normal);
+	color: var(--pq-font-color);
+	border: var(--pq-border);
+	border-bottom: none;
+}
+
+.pq-tab-current {
+	background-color: var(--background-color-highlight);
+}
+
+.pq-tab:hover {
+	background-color: var(--background-color-highlight);
+}
+
+.modal-header .btn-close {
+	filter: invert(1); /* Invert the color to make it white */
+}
+
+.PQButtonDisabled {
+	background-color: grey;
+	cursor: not-allowed;
+	opacity: 0.1;
+}
+
+/*---------------------- Border ----------------------------*/
+.pq-border {
+	border: var(--pq-border);
+	border-radius: 5px;
+}
+
+/*----------------------- General Styling ----------------------------*/
+.pq-link {
+	color: white !important;
+	text-decoration: none;
+}
+
+.pq-form-control {
+	display: block;
+	padding: 10px;
+	margin-top: 25px;
+	width: 100%;
+	color: var(--pq-font-color) !important;
+	background-color: var(--background-color-primary) !important;
+	border: var(--pq-border);
+}
+
+.pq-validation-text {
+	display: block;
+	margin-top: 5px;
+	color: darkred;
+}
+
+/* For overwriting the highlight that happens after autofilling the control */
+.pq-form-control:-webkit-autofill {
+	-webkit-text-fill-color: var(--pq-font-color) !important;
+	-webkit-box-shadow: 0 0 0 30px var(--background-color-primary) inset !important;
+}
+
+.pq-title {
+	color: var(--pq-font-color);
+	font-style: normal;
+	font-family: Algerian;
+	font-size: 5vmin;
+	margin-left:auto;
+}
+
+.BackgroundColorDark {
+	background-color: var(--background-color-primary);
+}
+
+.pq-font {
+	font-size: 1rem;
+	color: white;
+	font-style: normal;
+}
+
+.pq-scrollbar {
+	overflow-y: auto; /* Only adds scrollbar if needed. */
+	padding-right: 2rem;
+}
+
+	.pq-scrollbar::-webkit-scrollbar-track {
+		background-color: black !important; /* Background of the scrollbar track */
+	}
+
+	.pq-scrollbar::-webkit-scrollbar-thumb {
+		background-color: black !important; /* Color of the scrollbar thumb */
+		border-radius: 10px !important; /* Rounded edges */
+		border: 2px solid white !important; /* Adds a border around the thumb */
+	}
+
+		.pq-scrollbar::-webkit-scrollbar-thumb:hover {
+			background-color: black !important; /* Changes on hover */
+		}

@@ -1,0 +1,152 @@
+@{
+	ViewData["Title"] = "Game";
+	bool isUserLoggedIn = User.Identity?.IsAuthenticated == true;
+	// Get User's profile image
+	string userProfileImage = User.FindFirst("GoogleProfileImageUrl")?.Value;
+	// Something went wrong, show the default image.
+	if (userProfileImage == null)
+	{
+		userProfileImage = "";
+	}
+}
+
+<div class="pq-container">
+	<!-- Menu Button -->
+	<button class="pq-button" id="pq-modal-open" style="top:0; right:0; height: 7vmin; width: 14vmin;"> Menu </button>
+	<!-- Login Display -->
+	<div class="login-display" style="top: 0; left: 0; height: 8vmin; width: 20vmin;">
+		@if (isUserLoggedIn)
+		{
+			<img src="@userProfileImage"/>
+			<a class="pq-link" href="/Account/SignOutFromGoogleLogin">Logout</a>
+		}
+		else
+		{
+			<a class="pq-link" href="/Account/GoogleLogin">Login with Google</a>
+		}
+	</div>
+	<!-- Dialog Box -->
+	<div class="dialog-box pq-center-element-x" style="top: 25%; left: 50%; height: 20vmin; width: 100vmin;"></div>
+	<!-- Player Display -->
+	<div class="pq-container" id="player-display" style="bottom: 0; left: 0; width: 50vmin; height: 50vmin;">
+		<div class="player-name" style="top: 2%; left: 4%;"></div>
+		<img class="player-image" src="~/images/LoadingImage.png" style="top: 10%; left: 3%; height: 75%; width: auto;" />
+		<img class="player-potions-icon" src="~/images/PotionIcon.png" alt="Potion Icon" style="top: 70%; left: 76%; height: 15%; width: auto;">
+		<div class="player-potions stat-text" id="player-health-potions" style="top: 74%; left: 89%;"></div>
+		<img class="player-attack-icon" src="~/images/SwordIcon.png" alt="Attack Icon" style="bottom: 0; left: 3%; height: 15%; width: auto;">
+		<span class="player-attack stat-text" id="player-attack" style="bottom: 1%; left: 15%;">0</span>
+		<img class="player-defense-icon" src="~/images/ShieldIcon.png" alt="Shield Icon" style="bottom: 0; left: 25%; height: 15%; width: auto;">
+		<span class="player-defense stat-text" id="player-defense" style="bottom: 1%; left: 38%;">0</span>
+		<span class="player-hp stat-text" id="player-hp" style="bottom: 3%; right: 25%;"></span>
+	</div>
+	<!-- Action Buttons Display -->
+	<div class="pq-center-element-x" id="action-button-display" style="bottom: 0; left: 50%; height: 45vmin; width: fit-content;">
+		<button class="pq-button" id="attack-btn" style="margin-bottom:2vmin; width: 100%;">Attack</button>
+		<button class="pq-button" id="health-potion-btn" style="margin-bottom:2vmin; width: 100%;">Use Potion</button>
+	</div>
+	<!-- Enemy Display -->
+	<div class="pq-container" id="enemy-display" style="bottom: 0; right: 0; width: 50vmin; height: 50vmin;">
+		<div class="enemy-name" id="enemy-name" style="top: 2%; right: 4%;"></div>
+		<img class="enemy-image" id="enemy-image" src="~/images/LoadingImage.png" style="top: 10%; right: 3%; height: 75%; width: auto;" />
+		<img class="enemy-attack-icon" src="~/images/SwordIcon.png" alt="Attack Icon" style="bottom: 0; right: 62%; height: 15%; width: auto;">
+		<span class="enemy-attack stat-text" id="enemy-attack" style="bottom: 1%; right: 62%;"></span>
+		<img class="enemy-defense-icon" src="~/images/ShieldIcon.png" alt="Shield Icon" style="bottom: 0; right: 40%; height: 15%; width: auto;">
+		<span class="enemy-defense stat-text" id="enemy-defense" style="bottom: 1%; right: 38%;"></span>
+		<span class="enemy-hp stat-text" id="enemy-hp" style="bottom: 3%; right: 5%;"></span>
+	</div>
+</div>
+
+<div class="pq-modal-fullscreen" id="pq-modal">
+	<div class="pq-container">
+		<!-- Player display on the left -->
+		<button class="pq-button" id="pq-modal-close" style="top:0; right:2vmin; height: 8vmin; width: 17vmin;"> Close </button>
+		<div class="player-name" style="top:15vmin; left:5vmin; height:6vmin; width:40vmin"></div>
+		<img class="player-image" style="top:20vmin; left:5vmin; height: 40vmin; width: auto; max-width:25%; max-height:auto;" src="~/images/LoadingImage.png" alt="Alternate Text" />
+		<!-- Stats box label -->
+		<div class="" style="bottom:30vmin; left:6vmin; height: 5vmin; width: 17vmin; font-size:3vmin; color: white;"> Stats </div>
+		<!-- Stats Box -->
+		<div class="pq-container pq-border" style="bottom:0; left:5vmin; height:30vmin; width: 40vmin; max-width:25%">
+			<span class="stat-text" style="top:2%; left:5%; height: 15%; width:100%">Health: </span>
+			<span class="player-hp stat-text" id="player-hp" style="top:2%; left:40%; height: 15%; width:100%"></span>
+			<img class="player-defense-icon" src="~/images/ShieldIcon.png" alt="Shield Icon" style="top:19%; left:2%; height: 20%; width:auto">
+			<span class="player-defense stat-text" id="player-defense" style="top:22%; left:20%; height: auto; width:auto">0</span>
+			<img class="player-attack-icon" src="~/images/SwordIcon.png" alt="Attack Icon" style="top:40%; left:2%; height: 19%; width:auto">
+			<span class="player-attack stat-text" id="player-attack" style="top:44%; left:20%; height: auto; width:auto">0</span>
+		</div>
+		<!-- Tab Menu -->
+		<div class="pq-tab-window pq-border" style="bottom:0; right:0vmin; height:85vmin; width:150vmin; max-width: 70%;">
+			<!-- Tab Buttons -->
+			<button class="pq-tab" id="inventory-button" style="top:-4.5vmin; left:1vmin; height: 4vmin; width: 12vmin;" onclick="switchTab('inventory')"> Inventory </button>
+			<button class="pq-tab" id="map-button" style="top:-4.5vmin; left:14vmin; height: 4vmin; width: 12vmin;" onclick="switchTab('map')"> Map </button>
+			<!-- Inventory window -->
+			<div id="inventory-tab" class="pq-container tab-content" >
+				<div id="equipped-item" class="pq-inventory-slot" style="top:5%; height:15%; left:5%;"></div>
+				<div id="equip-button" class="pq-inventory-slot" style="top:25%; height:10%; left:5%; color:white;">Equip Item</div>
+				<div class="pq-inventory-display pq-container" style="top:0; right:0; height: 60%; width: 75%; border:white solid 2px">
+					<div id="item-name" class="pq-font" style="top:5%; right: 0; height:15%; width:45%; font-size:4vmin;"></div>
+					<img id="item-image" src="~/images/PlaceholderItem1.png" class="pq-center-element-y" style="top:50%; left:5%; height:auto; width:40%; display:none; border-radius:10px;">
+					<img id="shield-icon" src="~/images/ShieldIcon.png" style="bottom:10%; right: 40%; height:20%; width:auto; display:none;">
+					<div id="item-defense" class="pq-font" style="bottom:5%; right:30%; height:20%; width:10%; font-size:4vmin;"></div>
+					<img id="sword-icon" src="~/images/SwordIcon.png" style="bottom:10%; right: 20%; height:20%; width:auto; display:none;">
+					<div id="item-attack" class="pq-font" style="bottom:5%; right:10%; height:20%; width:10%; font-size:4vmin;"></div>
+				</div>
+				<div class="pq-inventory-display" style="bottom:0; left:0; height: 35%; width: 100%">
+					@for (int i = 1; i <= 20; i++)
+					{
+						<div class="pq-inventory-slot" id="inventory-slot-@i">
+							
+						</div>
+					}
+				</div>
+			</div>
+			<!-- Map window -->
+			<div id="map-tab" class="pq-container tab-content">
+				<div class="pq-map-display" id="map-container" style="bottom:0; left:0; height: 35%; width: 100%">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Respawn Modal -->
+<div class="modal fade" id="respawnModal" tabindex="-1" aria-labelledby="respawnModalLabel" aria-hidden="true">
+	<div class="modal-dialog pq-border pq-font text-light">
+		<div class="modal-content BackgroundColorDark p-2">
+			<div class="modal-header" style="border:none;">
+				<h5 class="modal-title" id="respawnModalLabel">You have been defeated!</h5>
+				<button type="button" class="btn-close" style="color:white;" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" style="border:none;">
+				Press the button below to respawn and fight again.
+			</div>
+			<div class="modal-footer" style="border:none;">
+				<button type="button" class="btn pq-button pq-font" onclick="respawnPlayer()">Respawn</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Tutorial Modal -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+	<div class="modal-dialog pq-border pq-font text-light">
+		<div class="modal-content BackgroundColorDark p-2">
+			<div class="modal-header" style="border:none;">
+				<h5 class="modal-title" id="tutorialModalLabel">Welcome to the tutorial!</h5>
+				<button type="button" class="btn-close" style="color:white;" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" id="tutorialText" style="border:none;">
+				@*text will be filled out via JS*@
+			</div>
+			<div class="modal-footer" style="border:none;">
+				<button type="button" class="btn pq-button pq-font" onclick="endTutorial()">Skip Tutorial</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="~/js/Tutorial.js"></script>
+<script src="~/js/Game.js"></script>
+<script src="~/js/Combat.js"></script>
+<script src="~/js/Map.js"></script>
+<script src="~/js/Menu.js"></script>
+<script src="~/js/Inventory.js"></script>

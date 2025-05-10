@@ -1,0 +1,59 @@
+@model PromptQuest.Models.Player
+
+@{
+	ViewData["Title"] = "Character Creation";
+	bool isUserLoggedIn = User.Identity?.IsAuthenticated == true;
+	// Get User's profile image
+	string userProfileImage = User.FindFirst("GoogleProfileImageUrl")?.Value;
+	// Something went wrong, show the default image.
+	if(userProfileImage == null) {
+		userProfileImage = "";
+	}
+}
+
+<div class="pq-container">
+	<!-- Login Display -->
+	<div class="login-display" style="top: 0; left: 0; height: 8vmin; width: 20vmin;">
+		@if(isUserLoggedIn) {
+			<img src="@userProfileImage"/>
+			<a class="pq-link" href="/Account/SignOutFromGoogleLogin">Logout</a>
+		}
+		else {
+			<a class="pq-link" href="/Account/GoogleLogin">Login with Google</a>
+		}
+	</div>
+	<div class="pq-container pq-center-element-x" style="height: 100%; width: 50%; top: 0; left: 50%; border: .1vmin solid white; border-radius: 50px;">
+		<img src="~/images/Warrior.png" alt="Default Player Portrait" id="player-image" class="pq-center-element-x" style="height: 50%; width: auto; top:5%; left: 50%; border: .1vmin solid white; max-width: 100%;">
+		<form asp-controller="Game" asp-action="CreateCharacter" method="post" class="pq-form pq-center-element-x" style="height: 45%; width: 70%; bottom:0; left: 50%;">
+			<input asp-for="Name" type="text" minlength="1" maxlength="25" class="pq-form-control" id="name" name="name" placeholder="Enter Character's Name" />
+			<span asp-validation-for="Name" class="pq-validation-text"></span>
+			<select asp-for="Class" class="pq-form-control" id="class-select" onchange="updatePlayerImage()">
+				<option value="Warrior">Warrior</option>
+				<option value="Mage">Mage</option>
+				<option value="Archer">Archer</option>
+			</select>
+			<span asp-validation-for="Class" class="text-danger"></span>
+			<button type="submit" id="createCharacterButton" class="pq-button" style="background-color:darkgreen; margin-top:20px;">Start Adventure</button>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		function updatePlayerImage() {
+			var classSelect = document.getElementById("class-select");
+			var playerImage = document.getElementById("player-image");
+			switch (classSelect.value) {
+				case "Warrior":
+					playerImage.src = "/images/Warrior.png";
+					break;
+				case "Mage":
+					playerImage.src = "/images/Mage.png";
+					break;
+				case "Archer":
+					playerImage.src = "/images/Archer.png";
+					break;
+			}
+		}
+	</script>
+}
